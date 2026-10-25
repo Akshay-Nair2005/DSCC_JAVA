@@ -1,0 +1,30 @@
+:root { font-family: Inter, system-ui, sans-serif; color: #172033; background: #f2f5f9; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.container { width: min(920px, 92%); margin: 48px auto; }
+.eyebrow { color: #4763d8; font-size: .75rem; font-weight: 800; letter-spacing: .12em; }
+h1 { margin: 0; font-size: clamp(2.3rem, 7vw, 4.5rem); letter-spacing: -.06em; }
+h2 { margin: 0 0 18px; font-size: 1.15rem; }
+.subtitle { color: #627089; margin: 10px 0 34px; }
+.card { background: #fff; border: 1px solid #e3e8f0; border-radius: 16px; padding: 24px; margin: 18px 0; box-shadow: 0 8px 28px #1720330d; }
+.peer-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+label { display: grid; gap: 7px; color: #627089; font-size: .85rem; font-weight: 600; }
+input { border: 1px solid #ccd5e3; border-radius: 9px; padding: 11px 12px; font: inherit; color: inherit; }
+input:focus { outline: 2px solid #aab9ff; border-color: #4763d8; }
+button { border: 0; border-radius: 9px; padding: 12px 17px; background: #4763d8; color: #fff; font-weight: 700; cursor: pointer; }
+button:hover { background: #354db4; }
+.secondary { background: #e9edff; color: #354db4; padding: 8px 12px; }
+.section-heading { display: flex; justify-content: space-between; align-items: center; }
+.message { min-height: 20px; margin: 14px 0 0; color: #627089; }
+.message.error { color: #bb3a3a; }
+.file-list { list-style: none; padding: 0; margin: 0; }
+.file-list li, .peer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-top: 1px solid #edf0f5; }
+.file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge { background: #e9edff; color: #354db4; border-radius: 99px; padding: 4px 9px; font-size: .8rem; font-weight: 700; }
+.muted { color: #8792a5; }
+.discovered-peer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-top: 1px solid #edf0f5; }
+.device-address { display: block; color: #8792a5; font-size: .85rem; margin-top: 4px; }
+.peer-files { margin: 4px 0 14px 0; padding-left: 18px; }
+.peer-files li { margin: 8px 0; }
+a { color: #4763d8; }
+@media (max-width: 560px) { .peer-form label, .peer-form input, .peer-form button { width: 100%; } .file-list li, .peer, .discovered-peer { align-items: flex-start; flex-direction: column; } }

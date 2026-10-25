@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LAN Share</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">PEER-TO-PEER · LOCAL NETWORK</p>
+      <h1>LAN Share</h1>
+      <p class="subtitle">Share files directly between devices on the same Wi-Fi or wired network.</p>
+    </header>
+
+    <section class="card">
+      <h2>Add a peer</h2>
+      <form id="peer-form" class="peer-form">
+        <label>Peer IP address <input id="peer-ip" placeholder="192.168.1.25" required></label>
+        <label>Port <input id="peer-port" type="number" value="8000" min="1" max="65535" required></label>
+        <button type="submit">Connect</button>
+      </form>
+      <p id="message" class="message" role="status"></p>
+    </section>
+
+    <section class="card">
+      <div class="section-heading"><h2>My shared files</h2><button id="refresh-local" class="secondary">Refresh</button></div>
+      <ul id="local-files" class="file-list"><li class="muted">Loading...</li></ul>
+    </section>
+
+    <section class="card">
+      <div class="section-heading"><h2>Devices on this network</h2><button id="refresh-peers" class="secondary">Scan again</button></div>
+      <div id="discovered-peers"><p class="muted">Scanning the local network...</p></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading"><h2>Connected peers</h2><span id="peer-count" class="badge">0</span></div>
+      <div id="peers"><p class="muted">No peers added yet.</p></div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
