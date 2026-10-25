@@ -22,9 +22,7 @@ button:hover { background: #354db4; }
 .file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .badge { background: #e9edff; color: #354db4; border-radius: 99px; padding: 4px 9px; font-size: .8rem; font-weight: 700; }
 .muted { color: #8792a5; }
-.discovered-peer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-top: 1px solid #edf0f5; }
-.device-address { display: block; color: #8792a5; font-size: .85rem; margin-top: 4px; }
 .peer-files { margin: 4px 0 14px 0; padding-left: 18px; }
 .peer-files li { margin: 8px 0; }
 a { color: #4763d8; }
-@media (max-width: 560px) { .peer-form label, .peer-form input, .peer-form button { width: 100%; } .file-list li, .peer, .discovered-peer { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 560px) { .peer-form label, .peer-form input, .peer-form button { width: 100%; } .file-list li, .peer { align-items: flex-start; flex-direction: column; } }

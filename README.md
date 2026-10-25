@@ -1,8 +1,8 @@
 # LAN Share
 
 LAN Share is a small peer-to-peer file sharing application. Every running
-instance is both a web server and a peer. Devices running LAN Share discover
-one another automatically on the local network.
+instance is both a web server and a peer. Connect to another device by
+entering its local IP address and port.
 Files are served only from that peer's configured `shared` directory.
 
 ## Requirements
@@ -54,11 +54,30 @@ mkdir shared-peer-2
 java -jar target\lan-share-1.0.0.jar --port 8081 --shared shared-peer-2
 ```
 
+The five sample peer directories use these separate ports:
+
+| Shared directory | Port |
+|---|---:|
+| `shared-peer-1` | `8001` |
+| `shared-peer-2` | `8002` |
+| `shared-peer-3` | `8003` |
+| `shared-peer-4` | `8004` |
+| `shared-peer-5` | `8005` |
+
+To start all five peers at once in separate PowerShell windows, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run-peers.ps1
+```
+
+Stop any previously running peer windows before running this command again.
+Each peer must be started with its matching shared directory; otherwise all
+ports will serve the same files.
+
 On another device, replace `localhost` with the host computer's LAN address,
-for example `http://192.168.1.25:8080`. The **Devices on this network** panel
-automatically lists other LAN Share instances. Select **Connect**, confirm the
-prompt, and then select **Download** beside a shared file. Manual IP and port
-entry remains available if discovery is blocked by the network.
+for example `http://192.168.1.25:8080`. Enter that IP address and port in
+**Add a peer**, select **Connect**, confirm the prompt, and then select
+**Download** beside a shared file.
 
 To find the host's Windows LAN address, run `ipconfig` and use the IPv4
 address of the active adapter. Allow Java through Windows Firewall when
@@ -75,7 +94,5 @@ private network.
 - File names are normalized and constrained to the shared directory, which
   prevents path traversal.
 
-Discovery uses a UDP broadcast on port `39001`; allow Java through Windows
-Firewall on the private network if devices are not listed. This application
-does not provide authentication or encryption, so use it only on a trusted
-LAN.
+This application does not provide authentication or encryption, so use it only
+on a trusted LAN.

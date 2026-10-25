@@ -1,5 +1,4 @@
 const peers = [];
-const discoveredPeers = document.querySelector("#discovered-peers");
 const localFiles = document.querySelector("#local-files");
 const peersContainer = document.querySelector("#peers");
 const message = document.querySelector("#message");
@@ -60,47 +59,18 @@ function renderPeers() {
   });
 }
 
-function peerUrl(peer) {
-  return `http://${peer.host}:${peer.port}`;
-}
-
-function renderDiscoveredPeers(list) {
-  discoveredPeers.innerHTML = "";
-  if (!list.length) {
-    discoveredPeers.innerHTML = '<p class="muted">No LAN Share devices found. Make sure another device is running the app.</p>';
-    return;
-  }
-  list.forEach(peer => {
-    const section = document.createElement("section");
-    section.className = "discovered-peer";
-    section.innerHTML = `<div><strong>${escapeHtml(peer.label)}</strong><span class="device-address">${escapeHtml(peer.host)}:${peer.port}</span></div><button>Connect</button>`;
-    section.querySelector("button").onclick = () => connectToPeer(peer);
-    discoveredPeers.append(section);
-  });
-}
-
-async function scanForPeers() {
-  discoveredPeers.innerHTML = '<p class="muted">Scanning the local network...</p>';
-  try {
-    const response = await fetch("/api/peers");
-    if (!response.ok) throw new Error("Server returned " + response.status);
-    renderDiscoveredPeers((await response.json()).peers);
-  } catch (error) {
-    discoveredPeers.innerHTML = `<p class="muted">Could not scan for devices: ${escapeHtml(error.message)}</p>`;
-  }
-}
-
-async function connectToPeer(peer) {
-  const baseUrl = peerUrl(peer);
-  if (!window.confirm(`Connect to ${peer.label} at ${peer.host}:${peer.port}?`)) return;
+async function connectToPeer(ip, port) {
+  const baseUrl = `http://${ip}:${port}`;
+  const label = `${ip}:${port}`;
+  if (!window.confirm(`Connect to ${label}?`)) return;
   try {
     const response = await fetch(`${baseUrl}/api/files`);
     if (!response.ok) throw new Error("HTTP " + response.status);
     if (!peers.some(item => item.baseUrl === baseUrl)) {
-      peers.push({ label: peer.label, baseUrl });
+      peers.push({ label, baseUrl });
     }
     renderPeers();
-    showMessage(`Connected to ${peer.label}. Select a file to download it.`);
+    showMessage(`Connected to ${label}. Select a file to download it.`);
   } catch (error) {
     showMessage(`Could not connect to ${baseUrl}: ${error.message}`, true);
   }
@@ -110,11 +80,8 @@ document.querySelector("#peer-form").onsubmit = async event => {
   event.preventDefault();
   const ip = document.querySelector("#peer-ip").value.trim();
   const port = document.querySelector("#peer-port").value;
-  const baseUrl = `http://${ip}:${port}`;
   try {
-    const response = await fetch(`${baseUrl}/api/files`);
-    if (!response.ok) throw new Error("HTTP " + response.status);
-    await connectToPeer({ label: `${ip}:${port}`, host: ip, port });
+    await connectToPeer(ip, port);
     event.target.reset();
     document.querySelector("#peer-port").value = port;
   } catch (error) {
@@ -123,9 +90,7 @@ document.querySelector("#peer-form").onsubmit = async event => {
 };
 
 document.querySelector("#refresh-local").onclick = loadLocalFiles;
-document.querySelector("#refresh-peers").onclick = scanForPeers;
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character]));
 }
 loadLocalFiles();
-scanForPeers();
