@@ -8,6 +8,8 @@ h2 { margin: 0 0 18px; font-size: 1.15rem; }
 .subtitle { color: #627089; margin: 10px 0 34px; }
 .card { background: #fff; border: 1px solid #e3e8f0; border-radius: 16px; padding: 24px; margin: 18px 0; box-shadow: 0 8px 28px #1720330d; }
 .peer-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.create-file-form { display: grid; gap: 12px; margin-bottom: 18px; }
+textarea { min-height: 90px; resize: vertical; border: 1px solid #ccd5e3; border-radius: 9px; padding: 11px 12px; font: inherit; color: inherit; }
 label { display: grid; gap: 7px; color: #627089; font-size: .85rem; font-weight: 600; }
 input { border: 1px solid #ccd5e3; border-radius: 9px; padding: 11px 12px; font: inherit; color: inherit; }
 input:focus { outline: 2px solid #aab9ff; border-color: #4763d8; }

@@ -31,9 +31,51 @@ public final class PeerServer {
 
         server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
         server.createContext("/api/files", new FilesHandler());
+        server.createContext("/api/files/create", new CreateFileHandler());
         server.createContext("/api/download", new DownloadHandler());
         server.createContext("/", new StaticHandler());
         server.setExecutor(Executors.newCachedThreadPool());
+    }
+
+    private final class CreateFileHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            addCorsHeaders(exchange);
+            if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+                exchange.sendResponseHeaders(204, -1);
+                exchange.close();
+                return;
+            }
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendText(exchange, 405, "Method Not Allowed");
+                return;
+            }
+
+            Map<String, String> form = formParameters(exchange);
+            String fileName = form.get("name");
+            String content = form.getOrDefault("content", "");
+            if (fileName == null || fileName.isBlank()) {
+                sendText(exchange, 400, "File name is required");
+                return;
+            }
+            if (fileName.contains("/") || fileName.contains("\\")
+                    || ".".equals(fileName) || "..".equals(fileName)) {
+                sendText(exchange, 400, "Only a file name is allowed");
+                return;
+            }
+
+            Path target = sharedDirectory.resolve(fileName).normalize();
+            if (!target.getParent().equals(sharedDirectory)) {
+                sendText(exchange, 400, "Invalid file name");
+                return;
+            }
+            if (Files.exists(target)) {
+                sendText(exchange, 409, "A file with that name already exists");
+                return;
+            }
+            Files.writeString(target, content, StandardCharsets.UTF_8);
+            sendJson(exchange, 201, "{\"message\":\"File created\"}");
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -181,6 +223,20 @@ public final class PeerServer {
                         (first, ignored) -> first));
     }
 
+    private static Map<String, String> formParameters(HttpExchange exchange) throws IOException {
+        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        if (body.isBlank()) {
+            return Map.of();
+        }
+        return java.util.Arrays.stream(body.split("&"))
+                .map(part -> part.split("=", 2))
+                .filter(part -> part.length == 2)
+                .collect(Collectors.toMap(
+                        part -> URLDecoder.decode(part[0], StandardCharsets.UTF_8),
+                        part -> URLDecoder.decode(part[1], StandardCharsets.UTF_8),
+                        (first, ignored) -> first));
+    }
+
     private static void sendJson(HttpExchange exchange, int status, String body) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
         send(exchange, status, body);
@@ -188,7 +244,7 @@ public final class PeerServer {
 
     private static void addCorsHeaders(HttpExchange exchange) {
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
-        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
     }
 

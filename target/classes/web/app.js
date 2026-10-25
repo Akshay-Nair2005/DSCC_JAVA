@@ -36,6 +36,27 @@ async function loadLocalFiles() {
   }
 }
 
+document.querySelector("#create-file-form").onsubmit = async event => {
+  event.preventDefault();
+  const form = new URLSearchParams({
+    name: document.querySelector("#file-name").value.trim(),
+    content: document.querySelector("#file-content").value
+  });
+  try {
+    const response = await fetch("/api/files/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form
+    });
+    if (!response.ok) throw new Error(await response.text());
+    event.target.reset();
+    await loadLocalFiles();
+    showMessage("File created in this peer's shared folder.");
+  } catch (error) {
+    showMessage(`Could not create file: ${error.message}`, true);
+  }
+};
+
 function renderPeers() {
   document.querySelector("#peer-count").textContent = peers.length;
   peersContainer.innerHTML = "";

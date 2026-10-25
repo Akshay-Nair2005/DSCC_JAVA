@@ -26,6 +26,11 @@
 
     <section class="card">
       <div class="section-heading"><h2>My shared files</h2><button id="refresh-local" class="secondary">Refresh</button></div>
+      <form id="create-file-form" class="create-file-form">
+        <label>File name <input id="file-name" placeholder="notes.txt" required></label>
+        <label>File content <textarea id="file-content" placeholder="Enter content"></textarea></label>
+        <button type="submit">Create file</button>
+      </form>
       <ul id="local-files" class="file-list"><li class="muted">Loading...</li></ul>
     </section>
 
