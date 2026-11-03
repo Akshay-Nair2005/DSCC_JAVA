@@ -80,6 +80,16 @@ function renderPeers() {
   });
 }
 
+function updateFileCount() {
+  const count = document.querySelectorAll("#local-files li").length;
+  const element = document.getElementById("file-count");
+
+  if (element) {
+    element.textContent =
+      document.querySelector("#local-files .muted") ? "0" : count;
+  }
+}
+
 async function connectToPeer(ip, port) {
   const baseUrl = `http://${ip}:${port}`;
   const label = `${ip}:${port}`;

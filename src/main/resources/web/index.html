@@ -1,44 +1,199 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LAN Share</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAN Share | File Sharing</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="container">
-    <header>
-      <p class="eyebrow">PEER-TO-PEER · LOCAL NETWORK</p>
-      <h1>LAN Share</h1>
-      <p class="subtitle">Share files directly between devices on the same Wi-Fi or wired network.</p>
-    </header>
 
-    <section class="card">
-      <h2>Add a peer</h2>
-      <form id="peer-form" class="peer-form">
-        <label>Peer IP address <input id="peer-ip" placeholder="192.168.1.25" required></label>
-        <label>Port <input id="peer-port" type="number" value="8000" min="1" max="65535" required></label>
-        <button type="submit">Connect</button>
-      </form>
-      <p id="message" class="message" role="status"></p>
-    </section>
+  <div class="app-shell">
 
-    <section class="card">
-      <div class="section-heading"><h2>My shared files</h2><button id="refresh-local" class="secondary">Refresh</button></div>
-      <form id="create-file-form" class="create-file-form">
-        <label>File name <input id="file-name" placeholder="notes.txt" required></label>
-        <label>File content <textarea id="file-content" placeholder="Enter content"></textarea></label>
-        <button type="submit">Create file</button>
-      </form>
-      <ul id="local-files" class="file-list"><li class="muted">Loading...</li></ul>
-    </section>
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⇄</div>
+        <span>LAN<span class="brand-highlight">Share</span></span>
+      </div>
 
-    <section class="card">
-      <div class="section-heading"><h2>Connected peers</h2><span id="peer-count" class="badge">0</span></div>
-      <div id="peers"><p class="muted">No peers added yet.</p></div>
-    </section>
-  </main>
+      <div class="sidebar-label">WORKSPACE</div>
+
+      <nav>
+        <a href="#dashboard" class="nav-item active">
+          <span>▦</span> Dashboard
+        </a>
+        <a href="#my-files" class="nav-item">
+          <span>▤</span> My Files
+        </a>
+        <a href="#connected-peers" class="nav-item">
+          <span>◎</span> Connected Peers
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="network-card">
+          <div class="network-icon">⌁</div>
+          <div>
+            <strong>Local Network</strong>
+            <p>Peer-to-peer sharing</p>
+          </div>
+          <span class="online-dot"></span>
+        </div>
+        <p class="version">LAN Share · v1.0</p>
+      </div>
+    </aside>
+
+    <main class="main-content" id="dashboard">
+
+      <header class="topbar">
+        <div>
+          <p class="breadcrumb">WORKSPACE / DASHBOARD</p>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="topbar-status">
+          <span class="online-dot"></span>
+          Local sharing enabled
+        </div>
+      </header>
+
+      <section class="welcome">
+        <div class="welcome-content">
+          <p class="welcome-tag">PEER-TO-PEER NETWORK</p>
+          <h2>Share files.<br><span>Stay connected.</span></h2>
+          <p>Transfer files directly between devices on your local Wi-Fi or wired network. No cloud storage required.</p>
+          <a href="#my-files" class="welcome-button">Explore my files <span>→</span></a>
+        </div>
+        <div class="network-visual">
+          <div class="network-circle circle-one"></div>
+          <div class="network-circle circle-two"></div>
+          <div class="network-center">⇄</div>
+          <div class="network-node node-one">💻</div>
+          <div class="network-node node-two">📱</div>
+          <div class="network-node node-three">🖥️</div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <!-- <div class="stat-card">
+          <div class="stat-icon blue">▤</div>
+          <div>
+            <p>Shared Files</p>
+            <h3 id="file-count">--</h3>
+          </div>
+        </div> -->
+
+        <div class="stat-card">
+          <div class="stat-icon purple">◎</div>
+          <div>
+            <p>Connected Peers</p>
+            <h3 id="peer-count">0</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green">⌁</div>
+          <div>
+            <p>Network Status</p>
+            <h3 class="status-text">Local</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="card connect-card">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">NETWORK MANAGEMENT</p>
+            <h2>Connect to a peer</h2>
+            <p class="section-description">Enter another device's IP address to connect.</p>
+          </div>
+          <div class="heading-icon">⌁</div>
+        </div>
+
+        <form id="peer-form" class="peer-form">
+          <label>
+            Peer IP Address
+            <input id="peer-ip" placeholder="192.168.1.25" required>
+          </label>
+
+          <label>
+            Port
+            <input id="peer-port" type="number" value="8000" min="1" max="65535" required>
+          </label>
+
+          <button type="submit" class="primary-button">
+            <span>＋</span> Connect Peer
+          </button>
+        </form>
+        <p id="message" class="message" role="status"></p>
+      </section>
+
+      <section class="card files-card" id="my-files">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">FILE MANAGEMENT</p>
+            <h2>My shared files</h2>
+            <p class="section-description">Manage files available on your local network.</p>
+          </div>
+          <button id="refresh-local" class="secondary-button">↻ Refresh</button>
+        </div>
+
+        <form id="create-file-form" class="create-file-form">
+          <div class="create-heading">
+            <span class="create-icon">＋</span>
+            <strong>Create a new file</strong>
+          </div>
+
+          <label>
+            File Name
+            <input id="file-name" placeholder="example.txt" required>
+          </label>
+
+          <label>
+            File Content
+            <textarea id="file-content" placeholder="Write something to share with your peers..."></textarea>
+          </label>
+
+          <button type="submit" class="primary-button create-button">
+            Create File →
+          </button>
+        </form>
+
+        <div class="list-heading">
+          <strong>Available files</strong>
+          <span class="list-subtitle">Stored on this device</span>
+        </div>
+
+        <ul id="local-files" class="file-list">
+          <li class="muted">Loading files...</li>
+        </ul>
+      </section>
+
+      <section class="card peers-card" id="connected-peers">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">NETWORK CONNECTIONS</p>
+            <h2>Connected peers</h2>
+            <p class="section-description">Devices connected to your sharing network.</p>
+          </div>
+          <span class="peer-indicator">LIVE NETWORK</span>
+        </div>
+
+        <div id="peers">
+          <p class="muted empty-state">No peers added yet. Connect a device to get started.</p>
+        </div>
+      </section>
+
+      <footer>
+        <p>LAN Share <span>•</span> Direct. Private. Local.</p>
+      </footer>
+
+    </main>
+  </div>
+
   <script src="/app.js"></script>
 </body>
 </html>
+
