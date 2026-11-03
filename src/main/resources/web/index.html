@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAN Share | File Sharing</title>
+  <title>LAN Share | Version Control & Peer-to-Peer Sharing</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -22,13 +22,19 @@
       <div class="sidebar-label">WORKSPACE</div>
 
       <nav>
-        <a href="#dashboard" class="nav-item active">
+        <a href="#dashboard" class="nav-item active" data-section="dashboard">
           <span>▦</span> Dashboard
         </a>
-        <a href="#my-files" class="nav-item">
-          <span>▤</span> My Files
+        <a href="#my-files" class="nav-item" data-section="my-files">
+          <span>▤</span> My Files & Versions
         </a>
-        <a href="#connected-peers" class="nav-item">
+        <a href="#vcs-timeline" class="nav-item" data-section="vcs-timeline">
+          <span>🕒</span> Version History
+        </a>
+        <a href="#activity-logs" class="nav-item" data-section="activity-logs">
+          <span>📜</span> Activity & Peer Logs
+        </a>
+        <a href="#connected-peers" class="nav-item" data-section="connected-peers">
           <span>◎</span> Connected Peers
         </a>
       </nav>
@@ -37,163 +43,382 @@
         <div class="network-card">
           <div class="network-icon">⌁</div>
           <div>
-            <strong>Local Network</strong>
-            <p>Peer-to-peer sharing</p>
+            <strong>P2P Version Control</strong>
+            <p>LAN Track &amp; Share</p>
           </div>
           <span class="online-dot"></span>
         </div>
-        <p class="version">LAN Share · v1.0</p>
+        <p class="version">LAN Share VCS · v2.0</p>
       </div>
     </aside>
 
-    <main class="main-content" id="dashboard">
+    <main class="main-content">
 
       <header class="topbar">
         <div>
-          <p class="breadcrumb">WORKSPACE / DASHBOARD</p>
-          <h1>Dashboard</h1>
+          <p class="breadcrumb">WORKSPACE / <span id="current-section-title">DASHBOARD</span></p>
+          <h1 id="page-heading">Dashboard</h1>
         </div>
-        <div class="topbar-status">
-          <span class="online-dot"></span>
-          Local sharing enabled
+        <div class="topbar-actions">
+          <div class="topbar-status">
+            <span class="online-dot"></span>
+            <span id="node-status-text">LAN Node Active</span>
+          </div>
         </div>
       </header>
 
-      <section class="welcome">
-        <div class="welcome-content">
-          <p class="welcome-tag">PEER-TO-PEER NETWORK</p>
-          <h2>Share files.<br><span>Stay connected.</span></h2>
-          <p>Transfer files directly between devices on your local Wi-Fi or wired network. No cloud storage required.</p>
-          <a href="#my-files" class="welcome-button">Explore my files <span>→</span></a>
+      <!-- DASHBOARD SECTION -->
+      <section id="section-dashboard" class="view-section">
+        <div class="welcome">
+          <div class="welcome-content">
+            <p class="welcome-tag">VERSION-CONTROLLED PEER NETWORK</p>
+            <h2>Share files.<br><span>Track every change.</span></h2>
+            <p>Direct peer-to-peer file sharing with integrated version control. Track additions, edits, deletions, diffs, and maintain a live audit log of all peer activity.</p>
+            <div class="welcome-buttons">
+              <a href="#my-files" class="welcome-button">Manage Files &amp; Versions <span>→</span></a>
+              <a href="#activity-logs" class="welcome-button-alt">View Activity Log</a>
+            </div>
+          </div>
+          <div class="network-visual">
+            <div class="network-circle circle-one"></div>
+            <div class="network-circle circle-two"></div>
+            <div class="network-center">⇄</div>
+            <div class="network-node node-one">💻</div>
+            <div class="network-node node-two">📱</div>
+            <div class="network-node node-three">🖥️</div>
+          </div>
         </div>
-        <div class="network-visual">
-          <div class="network-circle circle-one"></div>
-          <div class="network-circle circle-two"></div>
-          <div class="network-center">⇄</div>
-          <div class="network-node node-one">💻</div>
-          <div class="network-node node-two">📱</div>
-          <div class="network-node node-three">🖥️</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">▤</div>
+            <div>
+              <p>Shared Files</p>
+              <h3 id="stat-files-count">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon purple">🕒</div>
+            <div>
+              <p>VCS Commits</p>
+              <h3 id="stat-commits-count">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">◎</div>
+            <div>
+              <p>Connected Peers</p>
+              <h3 id="stat-peers-count">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon amber">📜</div>
+            <div>
+              <p>Activity Logs</p>
+              <h3 id="stat-logs-count">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONNECT PEER CARD -->
+        <div class="card connect-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">PEER DISCOVERY &amp; CONNECTION</p>
+              <h2>Connect to a peer node</h2>
+              <p class="section-description">Connect to any peer device on your local network to browse files, compare versions, and transfer data.</p>
+            </div>
+            <div class="heading-icon">⌁</div>
+          </div>
+
+          <form id="peer-form" class="peer-form">
+            <label>
+              Peer IP Address
+              <input id="peer-ip" placeholder="192.168.1.25 or localhost" required>
+            </label>
+
+            <label>
+              Port
+              <input id="peer-port" type="number" value="8002" min="1" max="65535" required>
+            </label>
+
+            <button type="submit" class="primary-button">
+              <span>＋</span> Connect Peer
+            </button>
+          </form>
+          <p id="message" class="message" role="status"></p>
+        </div>
+
+        <!-- RECENT ACTIVITY SNIPPET -->
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">LIVE STREAM</p>
+              <h2>Recent Network Activity</h2>
+              <p class="section-description">Real-time log of peer connections, downloads, and version control events.</p>
+            </div>
+            <a href="#activity-logs" class="secondary-button">All Logs →</a>
+          </div>
+          <div id="dashboard-recent-logs" class="mini-logs-list">
+            <p class="muted">Loading recent activities...</p>
+          </div>
         </div>
       </section>
 
-      <section class="stats-grid">
-        <!-- <div class="stat-card">
-          <div class="stat-icon blue">▤</div>
-          <div>
-            <p>Shared Files</p>
-            <h3 id="file-count">--</h3>
+      <!-- MY FILES & VERSIONS SECTION -->
+      <section id="section-my-files" class="view-section" style="display: none;">
+        <div class="card files-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">FILE REPOSITORY &amp; VERSIONING</p>
+              <h2>Local Shared Files</h2>
+              <p class="section-description">Every file is version-tracked. Create new files, edit with commit messages, view diffs, or roll back to any past version.</p>
+            </div>
+            <div class="heading-actions">
+              <button id="toggle-create-btn" class="primary-button"><span>＋</span> Add / Create File</button>
+              <button id="refresh-local" class="secondary-button">↻ Refresh</button>
+            </div>
           </div>
-        </div> -->
 
-        <div class="stat-card">
-          <div class="stat-icon purple">◎</div>
-          <div>
-            <p>Connected Peers</p>
-            <h3 id="peer-count">0</h3>
+          <!-- COLLAPSIBLE CREATE FILE FORM -->
+          <div id="create-file-container" class="create-file-wrapper" style="display: none;">
+            <form id="create-file-form" class="create-file-form">
+              <div class="create-heading">
+                <span class="create-icon">＋</span>
+                <strong>Create / Add a New Tracked File</strong>
+              </div>
+
+              <div class="form-row">
+                <label>
+                  File Name
+                  <input id="file-name" placeholder="notes.txt, report.md, data.json" required>
+                </label>
+                <label>
+                  Commit Message
+                  <input id="file-create-msg" placeholder="e.g. Initial draft, project notes (optional)">
+                </label>
+              </div>
+
+              <label>
+                File Content
+                <textarea id="file-content" rows="6" placeholder="Write or paste file contents here..."></textarea>
+              </label>
+
+              <div class="form-actions">
+                <button type="submit" class="primary-button">Create &amp; Commit (v1)</button>
+                <button type="button" id="cancel-create-btn" class="secondary-button">Cancel</button>
+              </div>
+            </form>
           </div>
-        </div>
 
-        <div class="stat-card">
-          <div class="stat-icon green">⌁</div>
-          <div>
-            <p>Network Status</p>
-            <h3 class="status-text">Local</h3>
+          <!-- FILES LIST -->
+          <div class="list-heading">
+            <div>
+              <strong>Tracked Files in Shared Folder</strong>
+              <span id="file-count-label" class="list-subtitle">0 files</span>
+            </div>
+            <input id="file-search-input" class="search-input" placeholder="🔍 Search files...">
+          </div>
+
+          <div id="files-table-container" class="files-table-container">
+            <ul id="local-files" class="file-list-rich">
+              <li class="muted">Loading files...</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <section class="card connect-card">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">NETWORK MANAGEMENT</p>
-            <h2>Connect to a peer</h2>
-            <p class="section-description">Enter another device's IP address to connect.</p>
+      <!-- VERSION CONTROL TIMELINE SECTION -->
+      <section id="section-vcs-timeline" class="view-section" style="display: none;">
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">AUDIT TRAIL &amp; COMMITS</p>
+              <h2>Version Control Timeline</h2>
+              <p class="section-description">Chronological history of every file change: additions, edits, deletions, and rollbacks across this node.</p>
+            </div>
+            <div class="heading-actions">
+              <div class="filter-group" id="vcs-filter-buttons">
+                <button class="filter-btn active" data-filter="ALL">All</button>
+                <button class="filter-btn" data-filter="ADDED">Added</button>
+                <button class="filter-btn" data-filter="MODIFIED">Modified</button>
+                <button class="filter-btn" data-filter="REMOVED">Removed</button>
+                <button class="filter-btn" data-filter="RESTORED">Restored</button>
+              </div>
+              <button id="refresh-vcs" class="secondary-button">↻ Refresh</button>
+            </div>
           </div>
-          <div class="heading-icon">⌁</div>
+
+          <div id="vcs-timeline-container" class="timeline-container">
+            <p class="muted">Loading version history...</p>
+          </div>
         </div>
-
-        <form id="peer-form" class="peer-form">
-          <label>
-            Peer IP Address
-            <input id="peer-ip" placeholder="192.168.1.25" required>
-          </label>
-
-          <label>
-            Port
-            <input id="peer-port" type="number" value="8000" min="1" max="65535" required>
-          </label>
-
-          <button type="submit" class="primary-button">
-            <span>＋</span> Connect Peer
-          </button>
-        </form>
-        <p id="message" class="message" role="status"></p>
       </section>
 
-      <section class="card files-card" id="my-files">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">FILE MANAGEMENT</p>
-            <h2>My shared files</h2>
-            <p class="section-description">Manage files available on your local network.</p>
+      <!-- ACTIVITY & PEER LOGS SECTION -->
+      <section id="section-activity-logs" class="view-section" style="display: none;">
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">CONNECTION &amp; NETWORK AUDIT</p>
+              <h2>Peer Connection &amp; Activity Log</h2>
+              <p class="section-description">Maintains a persistent record of every peer connection, disconnection, file download, and modification.</p>
+            </div>
+            <div class="heading-actions">
+              <div class="filter-group" id="log-filter-buttons">
+                <button class="filter-btn active" data-filter="ALL">All</button>
+                <button class="filter-btn" data-filter="CONNECTION">Connections</button>
+                <button class="filter-btn" data-filter="VCS">File Changes</button>
+                <button class="filter-btn" data-filter="DOWNLOAD">Downloads</button>
+              </div>
+              <button id="refresh-logs" class="secondary-button">↻ Refresh</button>
+              <button id="clear-logs-btn" class="danger-outline-button">Clear History</button>
+            </div>
           </div>
-          <button id="refresh-local" class="secondary-button">↻ Refresh</button>
-        </div>
 
-        <form id="create-file-form" class="create-file-form">
-          <div class="create-heading">
-            <span class="create-icon">＋</span>
-            <strong>Create a new file</strong>
+          <div class="logs-toolbar">
+            <input id="log-search-input" class="search-input" placeholder="🔍 Filter logs by peer, file, or action...">
+            <label class="auto-refresh-label">
+              <input type="checkbox" id="auto-refresh-logs" checked> Auto-refresh (2.5s)
+            </label>
           </div>
 
-          <label>
-            File Name
-            <input id="file-name" placeholder="example.txt" required>
-          </label>
-
-          <label>
-            File Content
-            <textarea id="file-content" placeholder="Write something to share with your peers..."></textarea>
-          </label>
-
-          <button type="submit" class="primary-button create-button">
-            Create File →
-          </button>
-        </form>
-
-        <div class="list-heading">
-          <strong>Available files</strong>
-          <span class="list-subtitle">Stored on this device</span>
+          <div id="activity-logs-container" class="activity-logs-feed">
+            <p class="muted">Loading activity logs...</p>
+          </div>
         </div>
-
-        <ul id="local-files" class="file-list">
-          <li class="muted">Loading files...</li>
-        </ul>
       </section>
 
-      <section class="card peers-card" id="connected-peers">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">NETWORK CONNECTIONS</p>
-            <h2>Connected peers</h2>
-            <p class="section-description">Devices connected to your sharing network.</p>
+      <!-- CONNECTED PEERS SECTION -->
+      <section id="section-connected-peers" class="view-section" style="display: none;">
+        <div class="card peers-card">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">PEER-TO-PEER MESH</p>
+              <h2>Connected Peers</h2>
+              <p class="section-description">Active peer nodes in your network. View files, check version logs, and download directly from peers.</p>
+            </div>
+            <div class="heading-actions">
+              <span class="peer-indicator">LIVE NETWORK</span>
+              <button id="refresh-peers-btn" class="secondary-button">↻ Refresh Peers</button>
+            </div>
           </div>
-          <span class="peer-indicator">LIVE NETWORK</span>
-        </div>
 
-        <div id="peers">
-          <p class="muted empty-state">No peers added yet. Connect a device to get started.</p>
+          <div id="peers" class="peers-grid">
+            <p class="muted empty-state">No peers added yet. Connect a device to get started.</p>
+          </div>
         </div>
       </section>
 
       <footer>
-        <p>LAN Share <span>•</span> Direct. Private. Local.</p>
+        <p>LAN Share &amp; Version Control System <span>•</span> Decentralized. Versioned. Audit-Logged.</p>
       </footer>
 
     </main>
   </div>
 
+  <!-- MODAL: EDIT FILE -->
+  <div id="edit-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <span class="modal-label">VERSION CONTROL EDIT</span>
+          <h3 id="edit-modal-title">Edit File</h3>
+        </div>
+        <button class="modal-close" id="edit-modal-close">&times;</button>
+      </div>
+      <form id="edit-file-form">
+        <input type="hidden" id="edit-file-name">
+        <div class="modal-body">
+          <label>
+            File Content
+            <textarea id="edit-file-content" rows="12" class="code-editor" required></textarea>
+          </label>
+          <label>
+            Commit Message
+            <input id="edit-file-message" placeholder="Describe the changes made in this version..." required>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="secondary-button" id="edit-modal-cancel">Cancel</button>
+          <button type="submit" class="primary-button">Commit New Version →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: FILE VERSION HISTORY -->
+  <div id="history-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-label">FILE REVISION HISTORY</span>
+          <h3 id="history-modal-title">Version History: <span id="history-filename"></span></h3>
+        </div>
+        <button class="modal-close" id="history-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="file-history-list" class="file-history-timeline">
+          <p class="muted">Loading version history...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="secondary-button" id="history-modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DIFF VIEWER -->
+  <div id="diff-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-label">VERSION COMPARISON (DIFF)</span>
+          <h3 id="diff-modal-title">Compare Versions</h3>
+        </div>
+        <button class="modal-close" id="diff-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="diff-summary-bar" id="diff-summary-bar">
+          <span class="diff-tag diff-tag-file" id="diff-file-tag">file</span>
+          <span class="diff-tag" id="diff-v1-tag">v1</span>
+          <span>vs</span>
+          <span class="diff-tag" id="diff-v2-tag">v2</span>
+          <span class="diff-stat stat-add" id="diff-stat-add">+0</span>
+          <span class="diff-stat stat-del" id="diff-stat-del">-0</span>
+        </div>
+        <div id="diff-content" class="diff-viewer">
+          <p class="muted">Loading diff...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="secondary-button" id="diff-modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: VIEW SNAPSHOT CONTENT -->
+  <div id="view-content-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-label">HISTORICAL SNAPSHOT</span>
+          <h3 id="view-content-modal-title">Snapshot Content</h3>
+        </div>
+        <button class="modal-close" id="view-content-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre id="view-snapshot-content" class="code-view"></pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="secondary-button" id="view-content-modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/app.js"></script>
 </body>
 </html>
-

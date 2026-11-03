@@ -6,17 +6,26 @@ param(
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $classes = Join-Path $projectRoot "out\classes"
-$source = Join-Path $projectRoot "src\main\java\p2p\PeerServer.java"
+$sources = Get-ChildItem -Path (Join-Path $projectRoot "src\main\java\p2p") -Filter "*.java" | ForEach-Object { $_.FullName }
 $webDirectory = Join-Path $projectRoot "src\main\resources\web"
 $shared = Join-Path $projectRoot $SharedDirectory
 
+$javacCmd = "javac"
+if (Test-Path "C:\Program Files\Java\jdk-21\bin\javac.exe") {
+    $javacCmd = "C:\Program Files\Java\jdk-21\bin\javac.exe"
+}
+$javaCmd = "java"
+if (Test-Path "C:\Program Files\Java\jdk-21\bin\java.exe") {
+    $javaCmd = "C:\Program Files\Java\jdk-21\bin\java.exe"
+}
+
 New-Item -ItemType Directory -Force $classes, $shared | Out-Null
-javac -d $classes $source
+& $javacCmd -d $classes $sources
 if ($LASTEXITCODE -ne 0) {
     throw "Java compilation failed."
 }
 
-& java -cp $classes p2p.PeerServer `
+& $javaCmd -cp $classes p2p.PeerServer `
     --port $Port `
     --shared $shared `
     --web $webDirectory
